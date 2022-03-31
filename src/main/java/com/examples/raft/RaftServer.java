@@ -1,5 +1,8 @@
 package com.examples.raft;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -12,10 +15,18 @@ public class RaftServer {
     private static final Logger logger = LogManager.getLogger(RaftServer.class);
 
     private Server server;
+    private final Injector injector;
+
+    public RaftServer(final Injector injector) {
+        this.injector = injector;
+    }
 
     public void start(int port) throws IOException {
+        State state = this.injector.getInstance(State.class);
+        state = this.injector.getInstance(State.class);
+        state = this.injector.getInstance(State.class);
         server = ServerBuilder.forPort(port)
-                .addService(new RaftImpl())
+                .addService(new RaftImpl(state))
                 .build()
                 .start();
 
@@ -50,7 +61,9 @@ public class RaftServer {
             port = Integer.valueOf(args[0]);
         }
 
-        final RaftServer raftServer = new RaftServer();
+        Injector injector = Guice.createInjector(new RaftModule());
+
+        final RaftServer raftServer = new RaftServer(injector);
         raftServer.start(port);
         raftServer.blockUntilShutdown();
     }
@@ -58,6 +71,13 @@ public class RaftServer {
     static class RaftImpl extends RaftGrpc.RaftImplBase {
 
         private static final Logger logger = LogManager.getLogger(RaftImpl.class);
+
+        private State state;
+
+        public RaftImpl(State state) {
+            logger.info("Receiving state {}", state);
+            this.state = state;
+        }
 
         @Override
         public void appendEntries(com.examples.raft.AppendRequest request,

@@ -10,6 +10,11 @@ plugins {
 
 application {
     mainClass = 'com.examples.raft.RaftServer'
+    // Required to run the application with Guice, since it uses deep reflection
+    // Don't ask me why, but my research just alludes that this feature was a bit
+    // premature for things like Guice.
+    // https://github.com/google/guice/issues/1133#issuecomment-434640864
+    applicationDefaultJvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
 }
 
 group 'com.examples.raft'
