@@ -2,7 +2,6 @@ package com.examples.raft;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
@@ -18,6 +17,7 @@ public class StateProvider implements Provider<State> {
         }
 
         prebuiltState = new State(
+                "",
                 0,
                 "",
                 new ArrayList<>(),

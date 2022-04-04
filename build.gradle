@@ -27,8 +27,8 @@ repositories {
     mavenLocal()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
 
 def grpcVersion = '1.45.0' // CURRENT_GRPC_VERSION
 def protobufVersion = '3.19.2'
@@ -46,6 +46,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.inject/guice
     implementation 'com.google.inject:guice:4.0'
+    implementation "com.google.code.gson:gson:2.9.0"
 
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"

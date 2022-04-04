@@ -15,6 +15,7 @@ public class State {
     private static final Logger logger = LogManager.getLogger(State.class);
 
     // Persistent state
+    private String id;
     private long currentTerm;
     private String votedFor;
     private List<String> log;
@@ -27,20 +28,26 @@ public class State {
     private Map<String, Long> nextIndex = new HashMap<>();
     private Map<String, Long> matchIndex = new HashMap<>();
 
-    public State(long currentTerm, String votedFor, List<String> log, List<String> serverIds) {
+    public State(String id, long currentTerm, String votedFor, List<String> log, List<String> serverIds) {
         logger.info(
-                "Initializing state at term {}, voted for {}, with {} log entries and {} servers",
+                "Initializing state for server {} at term {}, voted for {}, with {} log entries and {} servers",
+                id,
                 currentTerm,
                 votedFor,
                 log.size(),
                 serverIds.size());
+        this.id = id;
         this.currentTerm = currentTerm;
         this.votedFor = votedFor;
         this.log = new ArrayList<>(log);
 
-        for (String id : serverIds) {
-            this.nextIndex.put(id, (long)this.log.size());
-            this.matchIndex.put(id, 0L);
+        for (String otherId : serverIds) {
+            this.nextIndex.put(otherId, (long)this.log.size());
+            this.matchIndex.put(otherId, 0L);
         }
+    }
+
+    public String getId() {
+        return this.id;
     }
 }
