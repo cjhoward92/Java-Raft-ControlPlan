@@ -23,8 +23,6 @@ public class RaftServer {
 
     public void start(int port) throws IOException {
         State state = this.injector.getInstance(State.class);
-        state = this.injector.getInstance(State.class);
-        state = this.injector.getInstance(State.class);
         server = ServerBuilder.forPort(port)
                 .addService(new RaftImpl(state))
                 .build()

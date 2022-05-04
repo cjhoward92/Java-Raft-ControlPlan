@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'com.google.protobuf' version '0.8.18'
     id 'application'
+    id 'io.freefair.lombok' version '6.4.3'
 
     // Allows use of log4j-bom
     id 'io.spring.dependency-management' version '1.0.1.RELEASE'
@@ -14,7 +15,14 @@ application {
     // Don't ask me why, but my research just alludes that this feature was a bit
     // premature for things like Guice.
     // https://github.com/google/guice/issues/1133#issuecomment-434640864
-    applicationDefaultJvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+    applicationDefaultJvmArgs = [
+            '--add-opens',
+            'java.base/java.lang=ALL-UNNAMED',
+            '-Dcom.sun.management.jmxremote',
+            '-Dcom.sun.management.jmxremote.authenticate=false',
+            '-Dcom.sun.management.jmxremote.port=8484',
+            '-Dcom.sun.management.jmxremote.ssl=false'
+    ]
 }
 
 group 'com.examples.raft'
@@ -54,6 +62,12 @@ dependencies {
 
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
