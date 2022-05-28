@@ -11,6 +11,5 @@ public class RaftModule extends AbstractModule {
     @Override
     protected void configure() {
         logger.info("Beginning raft module config");
-        bind(State.class).toProvider(StateProvider.class);
     }
 }

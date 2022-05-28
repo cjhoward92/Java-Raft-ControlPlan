@@ -1,7 +1,6 @@
 package com.examples.raft;
 
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -22,9 +21,8 @@ public class RaftServer {
     }
 
     public void start(int port) throws IOException {
-        State state = this.injector.getInstance(State.class);
         server = ServerBuilder.forPort(port)
-                .addService(new RaftImpl(state))
+                .addService(new RaftImpl())
                 .build()
                 .start();
 
@@ -69,13 +67,6 @@ public class RaftServer {
     static class RaftImpl extends RaftGrpc.RaftImplBase {
 
         private static final Logger logger = LogManager.getLogger(RaftImpl.class);
-
-        private State state;
-
-        public RaftImpl(State state) {
-            logger.info("Receiving state {}", state);
-            this.state = state;
-        }
 
         @Override
         public void appendEntries(com.examples.raft.AppendRequest request,
