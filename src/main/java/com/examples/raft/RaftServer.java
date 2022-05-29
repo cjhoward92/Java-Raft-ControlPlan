@@ -1,6 +1,7 @@
 package com.examples.raft;
 
 import com.examples.raft.cmd.RaftServerOptions;
+import com.examples.raft.config.RaftConfig;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.grpc.Server;
@@ -21,13 +22,13 @@ public class RaftServer {
         this.injector = injector;
     }
 
-    public void start(int port) throws IOException {
-        server = ServerBuilder.forPort(port)
+    public void start(final RaftConfig config) throws IOException {
+        server = ServerBuilder.forPort(config.getHostConfig().getPort())
                 .addService(new RaftImpl())
                 .build()
                 .start();
 
-        logger.info("server boot complete on port {}", port);
+        logger.info("server boot complete on port {}", server.getPort());
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.error("Shutting down");
             RaftServer.this.stop();
@@ -53,10 +54,10 @@ public class RaftServer {
     public static void main(String[] args) throws IOException, InterruptedException {
         var config = RaftServerOptions.parseCommandLine(args);
 
-        Injector injector = Guice.createInjector(new RaftModule());
+        Injector injector = Guice.createInjector(new RaftModule(config));
 
         final RaftServer raftServer = new RaftServer(injector);
-        raftServer.start(config.getHostConfig().getPort());
+        raftServer.start(config);
         raftServer.blockUntilShutdown();
     }
 
