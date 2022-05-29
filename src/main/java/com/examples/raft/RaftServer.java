@@ -1,5 +1,6 @@
 package com.examples.raft;
 
+import com.examples.raft.cmd.RaftServerOptions;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.grpc.Server;
@@ -50,17 +51,12 @@ public class RaftServer {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        int port = 50001;
-
-        if (args.length > 0) {
-            logger.info("Setting port to {}", args[0]);
-            port = Integer.valueOf(args[0]);
-        }
+        var config = RaftServerOptions.parseCommandLine(args);
 
         Injector injector = Guice.createInjector(new RaftModule());
 
         final RaftServer raftServer = new RaftServer(injector);
-        raftServer.start(port);
+        raftServer.start(config.getHostConfig().getPort());
         raftServer.blockUntilShutdown();
     }
 
